@@ -23,15 +23,19 @@ import streamlit as st
 import matplotlib.pyplot as plt
 import numpy as np
 from PIL import Image
-import torch
-import cv2
-import torchvision
+
+
+from tensorflow import keras
+
+#import torch
+#import cv2
+#import torchvision
  
-st.write('# MNIST Digit Recognition')
+st.write('# Reconnaissance de chiffres manuscrits')
 st.write('## Using a CNN `PyTorch` model')
  
-Network = torch.load('model_torch_MNIST_CNN_99_1_streamlit.chk')
- 
+#Network = torch.load('model_torch_MNIST_CNN_99_1_streamlit.chk')
+#modele=
  
 st.write('### Draw a digit in 0-9 in the box below')
 # Specify canvas parameters in application
@@ -52,7 +56,22 @@ canvas_result = st_canvas(
     drawing_mode='freedraw',
     key="canvas",
 )
- 
+
+# Create a canvas component
+canvas_result2 = st_canvas(
+    fill_color="rgba(255, 165, 0, 0.3)",  # Fixed fill color with some opacity
+    stroke_width=stroke_width,
+    stroke_color='#FFFFFF',
+    background_color='#000000',
+    #background_image=Image.open(bg_image) if bg_image else None,
+    update_streamlit=realtime_update,
+    height=200,
+    width=200,
+    drawing_mode='freedraw',
+    key="canvas 2",
+)
+
+"""
 # Do something interesting with the image data and paths
 if canvas_result.image_data is not None:
  
@@ -184,3 +203,5 @@ if canvas_result.image_data is not None:
     st.write(str(output1))
     st.write('### Certainties')    
     st.write(str(certainty1*100))
+    
+"""
