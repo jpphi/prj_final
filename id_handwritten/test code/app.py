@@ -18,45 +18,26 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Dropout, Flatten
 from tensorflow.keras.layers import Conv2D, MaxPooling2D
 
+from joblib import load
 
 import numpy as np
 
 st.set_page_config("Lecture caractères manuscrits")
-st.title("🍀 VAE Playground")
-title_img = Image.open("title_img.png")
-
-st.image(title_img)
+st.title("🍀 Lecture caractères manuscrits")
+Image_illustration = Image.open("./images/image_titre.png")
+ 
+st.image(Image_illustration)
 st.markdown(
-    "This is a simple streamlit app to showcase how different VAEs "
-    "function and how the differences in architecture and "
-    "hyperparameters will show up in the generated images. \n \n"
-    "In this playground there will be two scenarios that you can use to "
-    "interact with the models:"
-)
-st.markdown(
-    """
-    1. **Image Reconstruction:** <br>
-    Observe quality of image reconstruction
-    2. **Image Interpolation:** <br>
-    Sample images equally spaced between 2 drawn images. Observe tradeoff
-    between image reconstruction and latents space regularity
-    """, unsafe_allow_html=True
+    "Aprés la théorie et l'étude sur les différents algorithmes "
+    "sur des données provenant du même dataset, il est temps de "
+    "passer à la pratique !\n \n"
+    "Comme on peut le voir sur l'image illustrant cette page il y "
+    "une trés grande diversité dans les écritures. Nos modèles ne "
+    "devrait donc pas avoir de difficultés majeures pour s'adapter "
+    "à un style d'écriture qu'il n'a jamais rencontré...\n\n"
 )
 
-#  the first is a reconstruction one which is "
-# "used to look at the quality of image reconstruction. The second one is "
-# "interpolation where you can generate intermediary data points between "
-# "two images. From here this you can analyze the regularity of the latent "
-# "distribution."
-
-st.markdown(
-    "There are also two different architectures. The first one is the vanilla "
-    "VAE and the other is the convolutional VAE which uses convolutional layers"
-    " for the encoder and decoder. "
-    "To find out more check this accompanying"
-    " [blogpost](https://towardsdatascience.com/beginner-guide-to-variational-autoencoders-vae-with-pytorch-lightning-13dbc559ba4b)"
-)
-st.subheader("Hyperparameters:")
+st.subheader("De la théorie, à la pratique:")
 st.markdown(
     "- **alpha**: Weight for reconstruction loss, higher values will lead to better"
     "image reconstruction but possibly poorer generation \n"
@@ -100,47 +81,87 @@ st.header("🖼️ Image Reconstruction", "recon")
 
 st.write(f"{dict_algo_fichier}")
 
-with st.form("reconstruction"):
+# Specify canvas parameters in application
+stroke_width = st.sidebar.slider("Stroke width: ", 1, 25, 9)
+ 
+realtime_update = st.sidebar.checkbox("Update in realtime", True)
+
+
+with st.form("Prédiction"):
     nom_algo = st.selectbox("Choose Model:", algo,
                               key="recon_model_select")
     fichier_modele= dict_algo_fichier[nom_algo]
     #modele = tf.keras.models.load_model(f'./modeles/{fichier_modele}')
     #modele = tf.keras.models.load_model('CNN_1.modele')
     
+    st.write(f"{nom_algo[0:3]}")
 
     recon_canvas = st_canvas(
         # Fixed fill color with some opacity
         fill_color="rgba(255, 165, 0, 0.3)",
-        stroke_width=8,
+        stroke_width= stroke_width,
         stroke_color="#FFFFFF",
         background_color="#000000",
         update_streamlit=True,
-        height=150,
-        width=150,
+        height=280,
+        width=280,
         drawing_mode="freedraw",
         key="recon_canvas",
     )
     submit = st.form_submit_button("Perform Reconstruction")
     if submit:
-        modele = tf.keras.models.load_model(f'./modeles/{fichier_modele}')
+        # on charge l'image et on l'a converti
         img= recon_canvas.image_data
-        
-        # Convertion de l'image au format rgba en tableau numpy 2d
         image= Image.fromarray(img)
         image= image.resize((28,28))
         image = ImageOps.grayscale(image)
         chiffre= np.array(image)/255.0
         
-        tab= list(modele.predict(chiffre.reshape(1,28,28)).reshape(10))
+        # On charge le modèle
+        id_algo= nom_algo[0:3]
+        if id_algo== "Reg":
+            modele= load(f'./modeles/{fichier_modele}') 
+            tab= list(modele.predict_proba([chiffre.ravel()])[0])
+        elif id_algo== "KNN":
+            pass
+        elif id_algo== "CNN":
+            modele = tf.keras.models.load_model(f'./modeles/{fichier_modele}')
+            tab= list(modele.predict(chiffre.reshape(1,28,28)).reshape(10))
+        
+        # Convertion de l'image au format rgba en tableau numpy 2d
+        
         prediction= tab.index(max(tab))
         #
 if submit:
     st.image(image)
     st.write(f"Chiffre lu: {prediction}")
+    st.write(f"tab= {tab}")
+
+
+st.markdown(
+    "Pour retrouver ce projet, ainsi que les projets réalisés lors de la "
+    "formation 'Développeur Data IA' effectué à simplon: \n\n"
+    " [jpphi - github](https://github.com/jpphi)"
+)
+
+
+
+
+#st.markdown(
+"""
+    1. **Image Reconstruction:** <br>
+    Observe quality of image reconstruction
+    2. **Image Interpolation:** <br>
+    Sample images equally spaced between 2 drawn images. Observe tradeoff
+    between image reconstruction and latents space regularity
+"""
+#    , unsafe_allow_html=True)
+
+
+
+
 
 """
-
-
 st.header("🔍 Image Interpolation", "interpolate")
 with st.form("interpolation"):
     model_name = st.selectbox("Choose Model:", files)
