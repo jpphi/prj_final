@@ -12,15 +12,14 @@ Projet fin détude Simplon
 
 import streamlit as st
 from streamlit_drawable_canvas import st_canvas
+
 import os
+
+import time
 
 from PIL import Image, ImageOps
 
 import tensorflow as tf
-#from tensorflow import keras
-#from tensorflow.keras.models import Sequential
-#from tensorflow.keras.layers import Dense, Dropout, Flatten
-#from tensorflow.keras.layers import Conv2D, MaxPooling2D
 
 from joblib import load
 
@@ -43,9 +42,12 @@ def charge_modeles(repertoire= None):
     # Recherche du nom de l'algorithme contenue dans le nom fichier
     # Les fichiers doivent être écrit avec la syntaxe: algo_caractéristique.modele
     algo= [a.split("_")[0] for i,a in enumerate(liste_fichiers)]
-    #print(liste_fichiers)
-    #print(algo)
     return {cle: valeur for cle, valeur in zip(algo, liste_fichiers)}
+
+def sauvegarde(nom):
+    imgpil= Image.open("./images/tmp.png")
+    imgpil.save(nom)
+    
 
 #-------------------------- Programme principal -------------------------------
 
@@ -72,44 +74,51 @@ st.markdown(
 st.subheader("De la théorie, à la pratique:")
 
 # Epaisseur du tracé
-epaisseur = st.slider("Epaisseur du trait: ", 1, 25, 15)
+epaisseur = st.sidebar.slider("Epaisseur du trait: ", 1, 25, 15)
+nom_algo = st.sidebar.selectbox("Choix du modèle d'algorithme:", algos,
+                          key="recon_model_select")
+fichier_modele= dict_algo_fichier[nom_algo]
+sav= st.sidebar.button("Sauvegarde")
 
 with st.form("Prédiction"):
-    nom_algo = st.selectbox("Choix du modèle d'algorithme':", algos,
-                              key="recon_model_select")
-    fichier_modele= dict_algo_fichier[nom_algo]
-    #modele = tf.keras.models.load_model(f'./modeles/{fichier_modele}')
-    #modele = tf.keras.models.load_model('CNN_1.modele')
-    
-    recon_canvas = st_canvas(
-        # Fixed fill color with some opacity
-        fill_color="rgba(0, 165, 0, 0.3)", #"rgba(255, 165, 0, 0.3)"
-        stroke_width= epaisseur,
-        stroke_color="#FFFFFF",
-        background_color="#000000",
-        update_streamlit=True,
-        height=280,
-        width=280,
-        drawing_mode= "freedraw",
-        key="recon_canvas",
-    )
-    submit = st.form_submit_button("Prédiction")
-    if submit:
+    c1, c2= st.columns(2)
+    with c1:
+        recon_canvas = st_canvas(
+            #epaisseur = st.slider("Epaisseur du trait: ", 1, 25, 15)
+            # Fixed fill color with some opacity
+            fill_color="rgba(0, 165, 0, 0.3)", #"rgba(255, 165, 0, 0.3)"
+            stroke_width= epaisseur,
+            stroke_color="#FFFFFF",
+            background_color="#000000",
+            update_streamlit=True,
+            height=280,
+            width=280,
+            drawing_mode= "freedraw",
+            key="recon_canvas",
+        )
+    with c2:
+        irma_dit = st.form_submit_button("Prédiction")
+
+
+    if irma_dit:
         # on charge l'image et on l'a converti
         img= recon_canvas.image_data
         image= Image.fromarray(img)
         image= image.resize((28,28))
-        image = ImageOps.grayscale(image)
+        image= ImageOps.grayscale(image)
+        image.save("./images/tmp.png")
+
+        
         chiffre= np.array(image)/255.0
         
         # On charge le modèle
         id_algo= nom_algo[0:3]
-        if id_algo== "Reg":
+        if id_algo== "Reg" or id_algo== "KNN":
             modele= load(f'./modeles/{fichier_modele}') 
             tab= list(modele.predict_proba([chiffre.ravel()])[0])
-        elif id_algo== "KNN":
-            modele= load(f'./modeles/{fichier_modele}') 
-            tab= list(modele.predict_proba([chiffre.ravel()])[0])
+        #elif id_algo== "KNN":
+            #modele= load(f'./modeles/{fichier_modele}') 
+            #tab= list(modele.predict_proba([chiffre.ravel()])[0])
         elif id_algo== "CNN":
             modele = tf.keras.models.load_model(f'./modeles/{fichier_modele}')
             tab= list(modele.predict(chiffre.reshape(1,28,28)).reshape(10))
@@ -118,14 +127,72 @@ with st.form("Prédiction"):
         
         prediction= tab.index(max(tab))
         #
-if submit:
+if irma_dit:
     ch= ""
-    for i in range(len(tab)):ch+= f"p({i})= {100*np.round(tab[i],4)}, "
-    st.image(image)
-    st.write(f"Chiffre lu: {prediction}")
+    for i in range(len(tab)):ch+= f"p({i})= {100*tab[i]:.2f} %, "
+    col1, col2= st.columns(2)
+    with col1:
+        st.image(image)
+    with col2:
+        st.write(f"Chiffre lu: {prediction}")
+        
     st.write(f"Tableau des probabilités:\n{ch[:-2]}")
     st.write(f"fichier modèle: {fichier_modele}")
 
+
+with st.sidebar.container():
+    st.markdown(
+        "Pour effectuer une sauvegarde de l'image appuyez sur le boutton "
+        "correspondant à la vérité terrain. L'image sera enregistrée sous "
+        "la forme 'chiffre_numero_unique.png'."
+    )
+    c21, c22, c23, c24, c25= st.columns(5)
+    with c21:
+        chif0= st.button(("0"), key="b0")
+        chif5= st.button(("5"), key="b5")
+    with c22:
+        chif1= st.button(("1"), key="b1")
+        chif6= st.button(("6"), key="b6")
+    with c23:
+        chif2= st.button(("2"), key="b2")
+        chif7= st.button(("7"), key="b7")
+    with c24:
+        chif3= st.button(("3"), key="b3")
+        chif8= st.button(("8"), key="b8")
+    with c25:
+        chif4= st.button(("4"), key="b4")
+        chif9= st.button(("9"), key="b9")
+   
+    if chif0:
+        sauvegarde(f"0_{int(time.time())}.png")
+    if chif5:
+        sauvegarde(f"5_{int(time.time())}.png")
+        
+    if chif1:
+        sauvegarde(f"1_{int(time.time())}.png")
+        
+    if chif6:
+        sauvegarde(f"6_{int(time.time())}.png")
+    
+    if chif2:
+        sauvegarde(f"2_{int(time.time())}.png")
+        
+    if chif7:
+        sauvegarde(f"7_{int(time.time())}.png")
+    
+    if chif3:
+        sauvegarde(f"3_{int(time.time())}.png")
+    
+    if chif8:
+        sauvegarde(f"8_{int(time.time())}.png")
+        
+    if chif4:
+        sauvegarde(f"4_{int(time.time())}.png")
+    
+    if chif9:
+        sauvegarde(f"9_{int(time.time())}.png")
+    
+  
 st.markdown(
     "Pour retrouver ce projet, ainsi que les projets réalisés lors de la "
     "formation 'Développeur Data IA' effectué à simplon: "
