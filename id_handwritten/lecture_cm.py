@@ -1,14 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Codé en mars 2022
-
 Projet fin détude Simplon
 
-@author: Jean-Pierre Maffre
+Codé en mars 2022
+
+@autheur: Jean-Pierre Maffre
 """
 
 #-------------- Import, variables globales et fonctions  ----------------------
+#
+#------------------------------------------------------------------------------
 
 import streamlit as st
 from streamlit_drawable_canvas import st_canvas
@@ -50,13 +52,92 @@ def sauvegarde(nom):
     
 
 #-------------------------- Programme principal -------------------------------
+#
+#------------------------------------------------------------------------------
+
+st.set_page_config(page_title= "Lecture caractères manuscrits", 
+                   page_icon= "icone.png")
 
 dict_algo_fichier = charge_modeles(repertoire= "./modeles/")
 algos = list(dict_algo_fichier.keys())
 fichiers= list(dict_algo_fichier.values())
 
-#------------------------ Construction de la page -----------------------------
-st.set_page_config("Lecture caractères manuscrits")
+#---------------- Construction de la page - zone latérale ---------------------
+st.sidebar.markdown("**Options:**")
+# Epaisseur du tracé
+epaisseur = st.sidebar.slider(label= "Épaisseur du trait", min_value= 1, 
+                              max_value= 25, value= 15, key= "ept")
+nom_algo = st.sidebar.selectbox(label="Choix du modèle d'algorithme", 
+                                options= algos, key="bteselect")
+fichier_modele= dict_algo_fichier[nom_algo]
+
+
+st.sidebar.markdown("**Sauvegarde:**")
+
+with st.sidebar.container():
+    st.markdown(
+        "Pour effectuer une sauvegarde de l'image appuyez sur le boutton "
+        "correspondant à la vérité terrain. L'image sera enregistrée sous "
+        "la forme 'chiffre_numero_unique.png'."
+    )
+    c21, c22, c23, c24, c25= st.columns(5)
+    with c21:
+        chif0= st.button(("0"), key="b0")
+        chif5= st.button(("5"), key="b5")
+    with c22:
+        chif1= st.button(("1"), key="b1")
+        chif6= st.button(("6"), key="b6")
+    with c23:
+        chif2= st.button(("2"), key="b2")
+        chif7= st.button(("7"), key="b7")
+    with c24:
+        chif3= st.button(("3"), key="b3")
+        chif8= st.button(("8"), key="b8")
+    with c25:
+        chif4= st.button(("4"), key="b4")
+        chif9= st.button(("9"), key="b9")
+
+    
+    if chif0:
+        sauvegarde(f"0_{int(time.time())}.png")
+    if chif5:
+        sauvegarde(f"5_{int(time.time())}.png")
+        
+    if chif1:
+        sauvegarde(f"1_{int(time.time())}.png")
+        
+    if chif6:
+        sauvegarde(f"6_{int(time.time())}.png")
+    
+    if chif2:
+        sauvegarde(f"2_{int(time.time())}.png")
+        
+    if chif7:
+        sauvegarde(f"7_{int(time.time())}.png")
+    
+    if chif3:
+        sauvegarde(f"3_{int(time.time())}.png")
+    
+    if chif8:
+        sauvegarde(f"8_{int(time.time())}.png")
+        
+    if chif4:
+        sauvegarde(f"4_{int(time.time())}.png")
+    
+    if chif9:
+        sauvegarde(f"9_{int(time.time())}.png")
+    
+st.sidebar.markdown("**Zone de test:**")
+st.sidebar.markdown(
+    "Pour effectuer lancer un test de non régression... un clic suffit :)!"
+    "On chargera l'ensemble des modèles disponibles que l'on testera. **Le "
+    "résultat des tests s'affiche en bas de page**."
+)
+sav= st.sidebar.button("Test", key="btst")
+
+
+#---------------- Construction de la page - zone principale -------------------
+
 st.title("🍀 Lecture caractères manuscrits")
 Image_illustration = Image.open("./images/image_titre.png")
  
@@ -72,13 +153,6 @@ st.markdown(
 )
 
 st.subheader("De la théorie, à la pratique:")
-
-# Epaisseur du tracé
-epaisseur = st.sidebar.slider("Epaisseur du trait: ", 1, 25, 15)
-nom_algo = st.sidebar.selectbox("Choix du modèle d'algorithme:", algos,
-                          key="recon_model_select")
-fichier_modele= dict_algo_fichier[nom_algo]
-sav= st.sidebar.button("Sauvegarde")
 
 with st.form("Prédiction"):
     c1, c2= st.columns(2)
@@ -116,9 +190,6 @@ with st.form("Prédiction"):
         if id_algo== "Reg" or id_algo== "KNN":
             modele= load(f'./modeles/{fichier_modele}') 
             tab= list(modele.predict_proba([chiffre.ravel()])[0])
-        #elif id_algo== "KNN":
-            #modele= load(f'./modeles/{fichier_modele}') 
-            #tab= list(modele.predict_proba([chiffre.ravel()])[0])
         elif id_algo== "CNN":
             modele = tf.keras.models.load_model(f'./modeles/{fichier_modele}')
             tab= list(modele.predict(chiffre.reshape(1,28,28)).reshape(10))
@@ -138,62 +209,95 @@ if irma_dit:
         
     st.write(f"Tableau des probabilités:\n{ch[:-2]}")
     st.write(f"fichier modèle: {fichier_modele}")
-
-
-with st.sidebar.container():
-    st.markdown(
-        "Pour effectuer une sauvegarde de l'image appuyez sur le boutton "
-        "correspondant à la vérité terrain. L'image sera enregistrée sous "
-        "la forme 'chiffre_numero_unique.png'."
-    )
-    c21, c22, c23, c24, c25= st.columns(5)
-    with c21:
-        chif0= st.button(("0"), key="b0")
-        chif5= st.button(("5"), key="b5")
-    with c22:
-        chif1= st.button(("1"), key="b1")
-        chif6= st.button(("6"), key="b6")
-    with c23:
-        chif2= st.button(("2"), key="b2")
-        chif7= st.button(("7"), key="b7")
-    with c24:
-        chif3= st.button(("3"), key="b3")
-        chif8= st.button(("8"), key="b8")
-    with c25:
-        chif4= st.button(("4"), key="b4")
-        chif9= st.button(("9"), key="b9")
-   
-    if chif0:
-        sauvegarde(f"0_{int(time.time())}.png")
-    if chif5:
-        sauvegarde(f"5_{int(time.time())}.png")
-        
-    if chif1:
-        sauvegarde(f"1_{int(time.time())}.png")
-        
-    if chif6:
-        sauvegarde(f"6_{int(time.time())}.png")
-    
-    if chif2:
-        sauvegarde(f"2_{int(time.time())}.png")
-        
-    if chif7:
-        sauvegarde(f"7_{int(time.time())}.png")
-    
-    if chif3:
-        sauvegarde(f"3_{int(time.time())}.png")
-    
-    if chif8:
-        sauvegarde(f"8_{int(time.time())}.png")
-        
-    if chif4:
-        sauvegarde(f"4_{int(time.time())}.png")
-    
-    if chif9:
-        sauvegarde(f"9_{int(time.time())}.png")
-    
   
 st.markdown(
     "Pour retrouver ce projet, ainsi que les projets réalisés lors de la "
     "formation 'Développeur Data IA' effectué à simplon: "
     " [jpphi - github](https://github.com/jpphi)")
+
+
+#------------------------ tests de non régression -----------------------------
+#
+#------------------------------------------------------------------------------
+
+
+ERR_CHARGEMENT_DICO= False
+ERR_DICO_VIDE= False
+ERR_TYPE_ALGO= False
+ERR_FICHIER_TEST_ABS= False
+TEST_LANCER= False
+
+if sav:
+    TEST_LANCER= True
+    st.markdown(
+        "**Zone de test**<br>Déroulement du test:<br/>"
+        "1- Les modèles peuvent-ils être chargés ?<br/>"
+        "2- Chaque modèle sera tester sur une image test."
+        ,unsafe_allow_html= True)
+    
+    try:
+        dict_algo_fichier = charge_modeles(repertoire= "./modeles/")
+        if dict_algo_fichier== {}: ERR_DICO_VIDE= True
+    except:
+        ERR_CHARGEMENT_DICO= True
+    
+    if ERR_CHARGEMENT_DICO:
+        st.markdown(
+           "**Erreur:**<br/><span style='color:red'> Le répertoire dans "
+           "lequel les modèles sont sauvegardé n'existe pas !</span><br/>"
+           , unsafe_allow_html= True)
+  
+    elif ERR_DICO_VIDE:
+        st.markdown(
+            "**Erreur:**<br/><span style='color:red'> Aucun algorithme n'a pu "
+            "être chargé !</span><br/>", unsafe_allow_html= True)
+        
+    else: # on continu les tests         
+        algos = list(dict_algo_fichier.keys())
+        fichiers= list(dict_algo_fichier.values())
+        try:
+            chiffre_test= Image.open("./images/image_test.png")
+            chiffre_test= np.array(chiffre_test)/255.0
+            
+        except:
+            st.markdown(
+                "**Erreur:**<br/><span style='color:red'> Fichier test absent "
+                "!</span><br/>", unsafe_allow_html= True)
+            ERR_FICHIER_TEST_ABS= True
+            
+        if not(ERR_FICHIER_TEST_ABS):
+
+            for i in range(len(algos)):
+                # on charge le modèle
+                id_algo= nom_algo[0:3]
+                if id_algo== "Reg" or id_algo== "KNN":
+                    modele= load(f'./modeles/{fichier_modele}') 
+                    tab= list(modele.predict_proba([chiffre_test.ravel()])[0])
+                elif id_algo== "CNN":
+                    modele = tf.keras.models.load_model(f'./modeles/{fichier_modele}')
+                    tab= list(modele.predict(chiffre_test.reshape(1,28,28)).reshape(10))
+                else:
+                    st.markdown(
+                        "**Erreur:**<br/><span style='color:red'> Algorithme de "
+                        "type inconnu !</span><br/>", unsafe_allow_html= True)
+                    ERR_TYPE_ALGO= True
+                    break
+                
+                prediction= tab.index(max(tab))
+                if prediction!= 5:
+                    st.write(f"Modèle: {algos[i]}, fichier: {fichiers[i]}:")
+                    st.markdown(
+                        "**Erreur:**<br/><span style='color:blue'> Erreur de "
+                        "prédiction ! Ceci ne remet par pour autant en cause "
+                        "le programme, une part d'aléatoire existe dans les "
+                        "prédictions </span><br/>", unsafe_allow_html= True)
+
+if not(ERR_CHARGEMENT_DICO) and not(ERR_DICO_VIDE) and not(ERR_TYPE_ALGO) and \
+    not(ERR_FICHIER_TEST_ABS) and TEST_LANCER:
+    st.markdown("**Test passés avec succès, pas d'erreur de fonctionnement**")
+    TEST_LANCER= False
+
+
+
+                
+
