@@ -19,17 +19,17 @@ from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.linear_model import SGDClassifier
 
-import nltk
+#import nltk
 from app import app
 
 
 # ---------------------------------------------------
 # - Code -
 
-nltk.download('stopwords')
+#nltk.download('stopwords')
 
 df = pd.read_csv("data/Emotion_final.csv")
-stopwords = nltk.corpus.stopwords.words('english')
+#stopwords = nltk.corpus.stopwords.words('english')
 
 
 targets = list(df["Emotion"])
@@ -39,7 +39,7 @@ X = corpus
 y = targets
 X_train, X_test, y_train, y_test = train_test_split(X, y,random_state=0)
 
-pipe91 = Pipeline([('vect', CountVectorizer(stop_words = stopwords)), ('sgd', SGDClassifier()),])
+pipe91 = Pipeline([('vect', CountVectorizer()), ('sgd', SGDClassifier()),])
 pipe91.fit(X_train, y_train)
 
 # ---------------------------------------------------

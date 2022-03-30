@@ -45,7 +45,7 @@ navbar = dbc.Navbar(
                         dbc.Col(dbc.NavbarBrand("Emotions Wheel DASH", className="ml-2")),
                     ],
                     align="center",
-                    no_gutters=True,
+                    #no_gutters=True,
                 ),
                 href="/home",
             ),

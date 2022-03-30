@@ -6,7 +6,7 @@ Created on Fri Jun 18 15:41:31 2021
 @author: jpphi
 """
 
-import dash_html_components as html
+from dash import html
 import dash_bootstrap_components as dbc
 
 
