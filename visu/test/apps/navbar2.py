@@ -1,16 +1,10 @@
-from dash import dcc
-#import dash_html_components as html
-from dash import html
-#import dash
-
 from dash.dependencies import Input, Output, State
 
 import dash_bootstrap_components as dbc
 
+from dash import html
 from app import app
-from apps import navbar2
 
-"""
 dropdown = dbc.DropdownMenu(
     children=[
         dbc.DropdownMenuItem("Consultation données", href="/data"),
@@ -22,7 +16,7 @@ dropdown = dbc.DropdownMenu(
     label = "Explore",
 )
 
-navbar = dbc.Navbar(
+layout = dbc.Navbar(
     dbc.Container(
         [
             html.A(
@@ -63,17 +57,3 @@ for i in [2]:
         [State(f"navbar-collapse{i}", "is_open")],
     )(toggle_navbar_collapse)
 
-
-"""
-
-layout = html.Div([dcc.Location(id='url_login_success', refresh=True),
-            navbar2.layout,
-            html.Div([html.H2('Login successful.'),
-            html.Br(),
-            html.P('Select a Dataset'),
-            dcc.Link('Data', href = '/data'),
-            ]), #end div
-            html.Div([html.Br(),
-            html.Button(id='back-button', children='Go back', n_clicks=0),
-                ]) #end div
-        ]) #end div

@@ -21,7 +21,7 @@ import dash_bootstrap_components as dbc
 
 from app import app, server
 
-from apps import home, login, success, failed, data, logout
+from apps import home, login, success, failed, data, logout, prediction, nonloger
 
 warnings.filterwarnings("ignore")
 conn = sqlite3.connect('data.sqlite')
@@ -62,25 +62,10 @@ login_manager.login_view = '/login'
 class Users(UserMixin, Users):
     pass
 
-
-
-"""
-app.layout = html.Div([
-    dcc.Location(id='url', refresh=False),
-    navbar,
-    html.Div(id='page-content', className='content'),
-])
-"""
-
-
-
 app.layout= html.Div([
-            html.Div(id='page-content', className='content')
-            ,  dcc.Location(id='url', refresh=False)
+            html.Div(id='page-content', className='content'),
+            dcc.Location(id='url', refresh=False),
         ])
-
-
-
 
 #--------------------- Callback -------------------------------
 
@@ -93,24 +78,38 @@ def load_user(user_id):
     Output('page-content', 'children')
     , [Input('url', 'pathname')])
 def display_page(pathname):
-    if pathname == '/':
+    if pathname== '/':
         return login.layout
-    elif pathname == '/login':
+
+    elif pathname== '/login':
         return login.layout
-    elif pathname == '/success':
+
+    elif pathname== '/success':
         if current_user.is_authenticated:
             return success.layout
         else:
             return failed.layout
-    elif pathname =='/data':
+
+    elif pathname== '/failed':
+        return failed.layout
+
+    elif pathname== '/data':
         if current_user.is_authenticated:
             return data.layout
-    elif pathname == '/logout':
+        else:
+            return failed.layout
+
+    elif pathname== '/logout':
         if current_user.is_authenticated:
-            logout_user()
             return logout.layout
         else:
-            return logout.layout
+            return failed.layout
+
+    elif pathname== '/prediction':
+        if current_user.is_authenticated:
+            return prediction.layout
+        else:
+            return failed.layout
     else:
         return '404'
 
@@ -159,7 +158,7 @@ def successful(n_clicks, input1, input2):
             login_user(user)
             return '/success'
         else:
-            pass
+            return '/failed'
     else:
         pass
 
@@ -201,6 +200,16 @@ if __name__ == '__main__':
 
 
 #------------------ zone code obsolète ----------------
+
+
+"""
+    elif pathname== '/data':
+        if current_user.is_authenticated:
+            return data.layout
+
+"""
+
+
 
 """
 create = html.Div([ html.H1('Create User Account')

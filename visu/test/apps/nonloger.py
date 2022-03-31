@@ -8,8 +8,7 @@ from apps import login
 
 
 layout = html.Div([ dcc.Location(id='url_login_df', refresh=True)
-            , html.Div([html.H2("Le mot de passe ou le nom d'utilisateur sont incorrect... "+\
-                    "Même joueur, joue encore !")
+            , html.Div([html.H2("Non loger !")
                     , html.Br()
                     , html.Div([login.layout])
                     , html.Br()
