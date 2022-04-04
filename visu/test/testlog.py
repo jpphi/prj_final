@@ -101,6 +101,7 @@ def display_page(pathname):
 
     elif pathname== '/logout':
         if current_user.is_authenticated:
+            logout_user()
             return logout.layout
         else:
             return failed.layout
@@ -126,6 +127,8 @@ def update_graph(dropdown_value):
         return [{'layout': {'title': 'Graph of Day 2'}
                 ,'data': [{'x': [1, 2, 3, 4]
                     , 'y': [2, 3, 2, 4]}]}]
+
+"""
 @app.callback(
    [Output('container-button-basic', "children")]
     , [Input('submit-val', 'n_clicks')]
@@ -147,6 +150,7 @@ def insert_users(n_clicks, un, pw, em):
         return [login]
     else:
         return [html.Div([html.H2('Already have a user account?'), dcc.Link('Click here to Log In', href='/login')])]
+"""
 
 @app.callback(Output('url_login', 'pathname')
     , [Input('login-button', 'n_clicks')]
@@ -162,6 +166,7 @@ def successful(n_clicks, input1, input2):
     else:
         pass
 
+"""
 @app.callback(
     Output('output-state', 'children')
     , [Input('login-button', 'n_clicks')]
@@ -178,13 +183,14 @@ def update_output(n_clicks, input1, input2):
             return 'Incorrect username or password'
     else:
         return ''
+"""
 
 @app.callback(
     Output('url_login_success', 'pathname')
     , [Input('back-button', 'n_clicks')])
 def logout_dashboard(n_clicks):
     if n_clicks > 0:
-        return '/'
+        return '/success'
 
 #from waitress import serve
 
