@@ -71,8 +71,9 @@ layout = html.Div([dcc.Location(id='url_login_success', refresh=True),
             html.Div([html.H2('Login successful.'),
                 html.Br(),
                 html.P('Select a Dataset'),
-                dcc.Link('Data', href = '/data'),
                 ]), #end div
+            dcc.Link('Data', href = '/data'),
+            dcc.Link('Prédiction', href = '/prediction'),
             html.Div([html.Br(),
             ])
         ]) #end div

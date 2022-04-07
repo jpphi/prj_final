@@ -185,13 +185,14 @@ def update_output(n_clicks, input1, input2):
         return ''
 """
 
+"""
 @app.callback(
     Output('url_login_success', 'pathname')
     , [Input('back-button', 'n_clicks')])
 def logout_dashboard(n_clicks):
     if n_clicks > 0:
         return '/success'
-
+"""
 #from waitress import serve
 
 
