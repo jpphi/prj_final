@@ -128,30 +128,6 @@ def update_graph(dropdown_value):
                 ,'data': [{'x': [1, 2, 3, 4]
                     , 'y': [2, 3, 2, 4]}]}]
 
-"""
-@app.callback(
-   [Output('container-button-basic', "children")]
-    , [Input('submit-val', 'n_clicks')]
-    , [State('username', 'value'), State('password', 'value'), State('email', 'value')])
-def insert_users(n_clicks, un, pw, em):
-    #hashed_password = generate_password_hash(pw, method='sha256')
-    if un is not None and pw is not None and em is not None:
-        #---------------------------------------------------------------------
-        #
-        # IL FAUT CONTROLER L EXISTANCE DE L UTILISATEUR AVANT DE L INSERER
-        #
-        #---------------------------------------------------------------------
-        
-        hashed_password = generate_password_hash(pw, method='sha256')
-        ins = Users_tbl.insert().values(username=un,  password=hashed_password, email=em)
-        conn = engine.connect()
-        conn.execute(ins)
-        conn.close()
-        return [login]
-    else:
-        return [html.Div([html.H2('Already have a user account?'), dcc.Link('Click here to Log In', href='/login')])]
-"""
-
 @app.callback(Output('url_login', 'pathname')
     , [Input('login-button', 'n_clicks')]
     , [State('uname-box', 'value'), State('pwd-box', 'value')])
@@ -208,6 +184,29 @@ if __name__ == '__main__':
 
 #------------------ zone code obsolète ----------------
 
+"""
+@app.callback(
+   [Output('container-button-basic', "children")]
+    , [Input('submit-val', 'n_clicks')]
+    , [State('username', 'value'), State('password', 'value'), State('email', 'value')])
+def insert_users(n_clicks, un, pw, em):
+    #hashed_password = generate_password_hash(pw, method='sha256')
+    if un is not None and pw is not None and em is not None:
+        #---------------------------------------------------------------------
+        #
+        # IL FAUT CONTROLER L EXISTANCE DE L UTILISATEUR AVANT DE L INSERER
+        #
+        #---------------------------------------------------------------------
+        
+        hashed_password = generate_password_hash(pw, method='sha256')
+        ins = Users_tbl.insert().values(username=un,  password=hashed_password, email=em)
+        conn = engine.connect()
+        conn.execute(ins)
+        conn.close()
+        return [login]
+    else:
+        return [html.Div([html.H2('Already have a user account?'), dcc.Link('Click here to Log In', href='/login')])]
+"""
 
 """
     elif pathname== '/data':
