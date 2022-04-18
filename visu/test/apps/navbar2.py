@@ -3,7 +3,10 @@ from dash.dependencies import Input, Output, State
 import dash_bootstrap_components as dbc
 
 from dash import html
-from app import app     
+from app import app   
+
+import base64
+
 
 dropdown = dbc.DropdownMenu(
     children=[
@@ -13,23 +16,22 @@ dropdown = dbc.DropdownMenu(
     ],
     nav = True,
     in_navbar = True,
-    label = "Explore",
+    label = "Menu",
 )
 
 layout = dbc.Navbar(
     dbc.Container(
         [
-            html.A(
                 dbc.Row(
                     [
-                        dbc.Col(html.Img(src="./images/image_test.png", height="30px")),
-                        dbc.Col(dbc.NavbarBrand("Emotions Wheel DASH", className="ml-2")),
+                        dbc.Col(html.Img(src="../assets/stethoscope-coeur2.png", height="30px")),
+                        dbc.Col(
+                            dbc.NavbarBrand("Prévention des maladies cardio-vasculaires.",)
+                        ),
                     ],
-                    align="center",
+                    
                     #no_gutters=True,
                 ),
-                href="/",
-            ),
             dbc.NavbarToggler(id="navbar-toggler2"),
             dbc.Collapse(
                 dbc.Nav(
@@ -38,7 +40,7 @@ layout = dbc.Navbar(
                 id="navbar-collapse2",
                 navbar=True,
             ),
-        ]
+        ], style={"display": "flex", "justify-content":"space-around"}
     ),
     color="dark",
     dark=True,

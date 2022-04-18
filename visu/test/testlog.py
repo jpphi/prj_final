@@ -21,7 +21,7 @@ import dash_bootstrap_components as dbc
 
 from app import app, server
 
-from apps import home, login, success, failed, data, logout, prediction, nonloger
+from apps import home, login, success, failed, data, logout, prediction, nonloger, glob
 
 warnings.filterwarnings("ignore")
 conn = sqlite3.connect('data.sqlite')
@@ -102,7 +102,7 @@ def display_page(pathname):
     elif pathname== '/logout':
         if current_user.is_authenticated:
             logout_user()
-            return logout.layout
+            return logout.layout #logout.layout
         else:
             return failed.layout
 
