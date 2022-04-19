@@ -170,7 +170,7 @@ layout = html.Div([navbar2.layout,
                 html.H2(children= "Veuillez remplir tout les champs du formulaire "+\
                     "avant de lancer une analyse.", style= {"text-align" : "center"}),
 
-                html.Div(id='container-button-basic', children= "Ici"),
+                html.Div(id='container-button-basic', children= ""),
             ], style={'background-color': glob.fond_ecran_reponse, "display": "flex",
             "flex-direction": "column", "justify-content":"space-between"})   
 
