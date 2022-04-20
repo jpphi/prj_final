@@ -1,30 +1,35 @@
 # https://ichi.pro/fr/comment-configurer-l-authentification-utilisateur-pour-les-applications-dash-a-l-aide-de-python-et-flask-118945949211473
 
-#import dash_core_components as dcc
 from dash import dcc
-#import dash_html_components as html
 from dash import html
-import dash
+from dash.dependencies import Input, Output, State
+import dash_bootstrap_components as dbc
+
+#import dash
+
 from sqlalchemy import Table, create_engine
 from sqlalchemy.sql import select
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
-import sqlite3
+#import sqlite3
 import warnings
-import os
 from flask_login import login_user, logout_user, current_user, LoginManager, UserMixin
 import configparser
 
-from dash.dependencies import Input, Output, State
-
-import dash_bootstrap_components as dbc
+import os
 
 from app import app, server
-
 from apps import home, login, success, failed, data, logout, prediction, nonloger, glob
 
+
+
+glob.bdd= '/home/jpphi/Documents/brief/ProjetFinDEtude/E1/datas/base_E1.db' #os.path.abspath("../datas/base_E1.db")
+
+
+
+
 warnings.filterwarnings("ignore")
-conn = sqlite3.connect('data.sqlite')
+#conn = sqlite3.connect('data.sqlite')
 engine = create_engine('sqlite:///data.sqlite')
 db = SQLAlchemy()
 config = configparser.ConfigParser()

@@ -9,5 +9,5 @@ fond_ecran_reponse= "#007B94"
 fond_ecran_formulaire= Bleu_de_minuit
 
 # base de données
-bdd= "../base_E1.db"
+bdd= "/home/jpphi/Documents/brief/ProjetFinDEtude/E1/datas/base_E1.db"
 dfbase= None
