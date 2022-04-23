@@ -1,0 +1,9 @@
+(base) jpphi@debian-jpphi:~/Documents/brief/ProjetFinDEtude/E2/id_handwritten$ conda activate prjfe
+(prjfe) jpphi@debian-jpphi:~/Documents/brief/ProjetFinDEtude/E2/id_handwritten$ python lecture_cm.py (prjfe) jpphi@debian-jpphi:~/Documents/brief/ProjetFinDEtude/E2/id_handwritten$ streamlit run lecture_cm.py
+
+  You can now view your Streamlit app in your browser.
+
+  Local URL: http://localhost:8501
+  Network URL: http://192.168.1.15:8501
+
+

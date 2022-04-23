@@ -23,7 +23,7 @@ from apps import home, login, success, failed, data, logout, prediction, nonloge
 
 
 
-glob.bdd= '/home/jpphi/Documents/brief/ProjetFinDEtude/E1/datas/base_E1.db' #os.path.abspath("../datas/base_E1.db")
+#glob.bdd= '/home/jpphi/Documents/brief/ProjetFinDEtude/E1/datas/base_E1.db' #os.path.abspath("../datas/base_E1.db")
 
 
 
@@ -119,6 +119,8 @@ def display_page(pathname):
     else:
         return '404'
 
+
+"""
 #set the callback for the dropdown interactivity
 @app.callback(
     [Output('graph', 'figure')]
@@ -133,6 +135,9 @@ def update_graph(dropdown_value):
                 ,'data': [{'x': [1, 2, 3, 4]
                     , 'y': [2, 3, 2, 4]}]}]
 
+
+
+"""
 @app.callback(Output('url_login', 'pathname')
     , [Input('login-button', 'n_clicks')]
     , [State('uname-box', 'value'), State('pwd-box', 'value')])

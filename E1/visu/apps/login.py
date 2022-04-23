@@ -16,7 +16,7 @@ import dash_bootstrap_components as dbc
 
 
 from app import app
-from apps import glob
+from apps import glob, form
 """
 border: 10px ridge #f00;
     background-color: #ff0;
@@ -37,22 +37,11 @@ des données enregistrées.''')]),
 
         html.P(""),
 
-        dbc.Col([
-                html.P(children= "Utilisateur :"),
-                dcc.Input(placeholder="Nom", type='text', id='uname-box',
-                        style= {"text-align": "center"}, ), #value= "toto"
-                #html.P(children= "Mot de passe :"),
-                dcc.Input(placeholder="Mot de passe", type='password', id='pwd-box',
-                        style= {"text-align": "center"}), #, value="toto"
-
-                html.Button(children='Connexion', n_clicks=0, type='submit',
-                                id='login-button', style= {"text-align": "center"}),
-                ],style={"display": "flex","flex-direction": "raw", 
-                "background-color": glob.fond_ecran_formulaire, "justify-content":"space-around",
-                "align-items":"baseline"
-                }),
         html.Div(children='', id='output-state',style={"display": "flex",
                         'background-color': glob.fond_ecran_formulaire,}),
+        
+        #html.Div(glob.form),
+        html.Div(form.layout),
 
         ], style={'background-color': glob.fond_ecran_formulaire,  "display": "flex",
         "flex-direction": "column","justify-content":"space-between", }) #end div
