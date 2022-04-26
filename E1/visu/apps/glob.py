@@ -18,14 +18,7 @@ df_patient= None
 
 
 
-
-from dash import dcc
-from dash import html
-
-import dash_bootstrap_components as dbc
-
-
-
+"""
 form=        html.Div([
                 html.Div([
                         html.P(children= "Utilisateur :"),
@@ -50,4 +43,4 @@ form=        html.Div([
                 "align-items":"baseline"
                 }),
 
-
+"""

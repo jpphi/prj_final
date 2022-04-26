@@ -19,7 +19,7 @@ import configparser
 import os
 
 from app import app, server
-from apps import home, login, success, failed, data, logout, prediction, nonloger, glob
+from apps import home, login, success, failed, data, logout, prediction, nonloger, glob, home
 
 
 
@@ -84,7 +84,7 @@ def load_user(user_id):
     , [Input('url', 'pathname')])
 def display_page(pathname):
     if pathname== '/':
-        return login.layout
+        return home.layout
 
     elif pathname== '/login':
         return login.layout
@@ -95,21 +95,24 @@ def display_page(pathname):
         else:
             return failed.layout
 
-    elif pathname== '/failed':
-        return failed.layout
-
     elif pathname== '/data':
         if current_user.is_authenticated:
             return data.layout
         else:
             return failed.layout
 
+    elif pathname== '/failed':
+        return failed.layout
+        # if current_user.is_authenticated:
+        #     return success.layout
+        # else:
+        #     return failed.layout
     elif pathname== '/logout':
         if current_user.is_authenticated:
             logout_user()
             return logout.layout #logout.layout
         else:
-            return failed.layout
+            return login.layout #failed.layout
 
     elif pathname== '/prediction':
         if current_user.is_authenticated:

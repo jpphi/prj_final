@@ -26,33 +26,13 @@ border: 10px ridge #f00;
 """
 layout = html.Div([
         dcc.Location(id='url_login', refresh=True),
-        html.H1("Prévention des maladies cardio-vasculaires", id='h1', style= {"text-align":"center"}),
-        dbc.Row([ dcc.Markdown('''
-Ce programme permet d'utiliser des algorithmes pré-entrainés chargé **d'évaluer le risque 
-pour un patient d'avoir un problème cardio vasculaire**.  
-D'autre part, **les nouvelles données** entrées pourrait aussi **enrichir la base de données**.  
-Le programme permet aussi de **consulter les éléments enregistrés** dans la base de données.  
-Enfin ce programme permet **d'accéder aux différentes statistiques** réalisées à partir 
-des données enregistrées.''')]),
-
+ 
         html.P(""),
 
-        html.Div(children='', id='output-state',style={"display": "flex",
-                        'background-color': glob.fond_ecran_formulaire,}),
+        #html.Div(children='', id='output-state',style={"display": "flex",
+        #                'background-color': glob.fond_ecran_formulaire,}),
         
-        #html.Div(glob.form),
         html.Div(form.layout),
 
-        ], style={'background-color': glob.fond_ecran_formulaire,  "display": "flex",
+], style={'background-color': glob.fond_ecran_formulaire,  "display": "flex",
         "flex-direction": "column","justify-content":"space-between", }) #end div
-
-       #dbc.Row([
-        #        dbc.Col([
-        #                html.P("Nom utilisateur"),
-        #        ],style={"display": "flex"})
-        #],align="center"),
-
-        
-        #dcc.Input(placeholder="Entrez votre mot de passe:",
-        #            type='password',
-        #            id='pwd-box'),

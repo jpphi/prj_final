@@ -21,9 +21,8 @@ layout = html.Div([ dcc.Location(id='url_login_df', refresh=True),
                 
                 html.H3(children= "Login :", style= {"text-align": "center"}),
                 
-                #html.Div(glob.form),
-                #html.Div(form.layout),
                 html.Div([login.layout]),
+ 
         ]) #end div
 ], style= {'background-color': glob.fond_ecran_formulaire,  "display": "flex", 
             "flex-direction": "column"}) #end div
