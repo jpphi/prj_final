@@ -1,3 +1,6 @@
+import os
+from joblib import load
+
 # Couleurs...
 Bleu_de_minuit= "#003366"
 Bleu_marine= "#03224C"
@@ -16,8 +19,53 @@ df_examen= None
 df_medecin= None
 df_patient= None
 
+repertoire= "/home/jpphi/Documents/brief/ProjetFinDEtude/E1/modeles/"
 
+def charge_modeles(repertoire= None):
+    """
+    Retourne un dictionnaire dont la clé est le nom de l'algorithme et la valeur
+        associée à la clé le nom du modèle binaire à charger.
+    Entrée:
+        nom du répertoire contenant les fichiers modeles
+    Sortie:
+        le dictionnaire{algo:nom_du_fichier}
+    """
+    assert type(repertoire)== str, "Le paramètre repertoire doit être de "+\
+        "type chaine de caractères"
+    liste_fichiers= os.listdir(repertoire)
+    # On ne récupère que les fichiers d'extensions .modele
+    liste_fichiers = [f for f in liste_fichiers if ".h5" in f]
+    # Recherche du nom de l'algorithme contenue dans le nom fichier
+    # Les fichiers doivent être écrit avec la syntaxe: algo_caractéristique.modele
+    algo= [a.split("_")[0] for i,a in enumerate(liste_fichiers)]
+    return {cle: valeur for cle, valeur in zip(algo, liste_fichiers)}
 
+def analyse(dp= None):
+
+        try:
+                dict_algo_fichier = charge_modeles(repertoire= repertoire)
+                algos = list(dict_algo_fichier.keys())
+                fichiers= list(dict_algo_fichier.values())
+
+                ch= {}
+                score=0
+                nb=0
+                for f in fichiers:
+                        nb+= 1
+                        mod= load(repertoire+f"{f}")
+                        score+= mod.predict([dp])[0]
+
+                        prediction = mod.predict_proba([dp])
+                        ch[f]= prediction[0]
+                ch["score"]= f"{score}/{nb}"
+                return str(ch)
+        except:
+                return None
+
+def alerte(message= None):
+        pass
+def enregistrement(dp= None, ra= None):
+        pass
 """
 form=        html.Div([
                 html.Div([

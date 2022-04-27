@@ -1,15 +1,9 @@
 from dash import dcc
-
 import dash_bootstrap_components as dbc
-
-#import dash_html_components as html
 from dash import html
-#import dash
-
 from dash.dependencies import Input, Output, State
 
 import datetime
-#from datetime import date
 
 from apps import navbar2, glob
 from app import app
@@ -17,9 +11,11 @@ from app import app
 
 layout = html.Div([navbar2.layout,
 
-            html.H2("Fiche patient.", style={"text-align":"center"}),
+            html.H2("Prédiction du risque cardio-vasculaire.", style={"text-align":"center"}),
 
             html.P(children= ""),
+
+            html.H4("Fiche patient.", style={"text-align":"center"}),
 
             # Boutons radios. 1er goupe de 4 entrées
             html.Div([ 
@@ -65,17 +61,17 @@ layout = html.Div([navbar2.layout,
 
                 html.Div([           
                     html.P(children= "Glucose :"),
-                    dcc.Dropdown(id='dd-glucose', options= [0,1,2], placeholder= '0, 1 ou 2',
+                    dcc.Dropdown(id='dd-glucose', options= [1,2,3], placeholder= '1, 2 ou 3',
                         style= {"width":"100px", "color": glob.fond_ecran_formulaire,},
-                        value= 0, ),
+                        value= 1, ),
                 ], style={"display": "flex", "align-items":"baseline",
                             "justify-content":"space-around", "gap": "10px"}),              
 
                 html.Div([           
                     html.P(children= "Cholesterol :"),
-                    dcc.Dropdown(id='dd-cholesterol', options= [0,1,2], placeholder= '0, 1 ou 2',
+                    dcc.Dropdown(id='dd-cholesterol', options= [1,2,3], placeholder= '1, 2 ou 3',
                         style= {"width":"100px", "color": glob.fond_ecran_formulaire},
-                        value= 0,), 
+                        value= 1,), 
                 ], style={"display": "flex", "align-items":"baseline",
                             "justify-content":"space-around", "gap": "10px", "width":"50 %"}),
 
@@ -163,6 +159,9 @@ layout = html.Div([navbar2.layout,
 
             html.P(children= ""),
 
+            html.H4("Liste des algorithmes.", style={"text-align":"center"}),
+
+            html.P(children= ""),
             #html.Div(id='output-container-date-picker-single'),
 
             # Zone d'analyse
@@ -235,7 +234,17 @@ def update_output(n_clicks, rigenre, riactivite, ritabac, rialcool, ddglucose,
         else:
             d1= datetime.datetime.strptime(dtnaissance,'%Y-%m-%d')
             d2= datetime.datetime.strptime(dtconsultation,'%Y-%m-%d')
-            return f"{n_clicks}, {rigenre}, {riactivite}, {ritabac}, {rialcool}, {ddglucose},"+\
+            donnees_patient= [(d2-d1).days, rigenre, itaille, ipoids, ipasys, ipadia,
+                ddcholesterol, ddglucose, ritabac, rialcool, riactivite]
+            
+            retour_analyse= glob.analyse(donnees_patient)
+
+            if retour_analyse== None:
+                glob.alerte("Erreur: Analyse impossible")
+            else: #Enregistrement en base
+                glob.enregistrement(ra= retour_analyse, dp= donnees_patient)
+
+            return f"{retour_analyse} {n_clicks}, {rigenre}, {riactivite}, {ritabac}, {rialcool}, {ddglucose},"+\
                 f"{ddcholesterol}, {itaille}, {ipoids}, {ipasys}, {ipadia}, {dtconsultation},"+\
                 f"{dtnaissance} - {(d2-d1).days}"
     
