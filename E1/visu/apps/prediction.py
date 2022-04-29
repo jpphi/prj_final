@@ -20,7 +20,7 @@ layout = html.Div([navbar2.layout,
             # Boutons radios. 1er goupe de 4 entrées
             html.Div([ 
                 html.Div([
-                    html.P(children= "Genre :"),
+                    #html.P(children= "Genre :"),
                     dcc.RadioItems(id="ri-genre", options=[{'label': ' Homme', 'value': 'h'},
                         {'label': ' Femme', 'value': 'f'}], value= "h",
                         labelStyle={'display': 'flex', "gap": "5px"},),
@@ -28,15 +28,15 @@ layout = html.Div([navbar2.layout,
                             "justify-content":"space-between",}),
 
                 html.Div([           
-                    html.P(children= "Activité physique :"),
-                    dcc.RadioItems(id="ri-activite", options=[{'label': ' Actif', 'value': 'act'},
-                        {'label': ' Inactif', 'value': 'inact'},], value= "act",
+                    #html.P(children= "Activité physique :"),
+                    dcc.RadioItems(id="ri-activite", options=[{'label': 'Activité physique', 'value': 'act'},
+                        {'label': 'Sans activité physique', 'value': 'inact'},], value= "act",
                         labelStyle={'display': 'flex',"gap":"5px"}),
                 ], style={"display": "flex", "align-items":"flex-start", "gap": "10px",
                             "justify-content":"space-around",}),
 
                 html.Div([           
-                    html.P(children= "Tabagisme :"),
+                    #html.P(children= "Tabagisme :"),
                     dcc.RadioItems(id= "ri-tabac", options=[{'label': ' Fumeur', 'value': 'fum'},
                         {'label': ' Non fumeur', 'value': 'nfum'}, ],  value= "nfum",
                         labelStyle={'display': 'flex', "gap":"5px"}),
@@ -44,10 +44,10 @@ layout = html.Div([navbar2.layout,
                             "justify-content":"space-around", "gap": "10px"}),
 
                 html.Div([           
-                    html.P(children= "Alcool :"),
-                    html.P("   "),
-                    dcc.RadioItems(id= "ri-alcool", options=[{'label': ' Oui', 'value': 'alc'},
-                        {'label': " Non", 'value': 'nalc'}, ],  value= "alc",
+                    #html.P(children= "Alcool :"),
+                    #html.P("   "),
+                    dcc.RadioItems(id= "ri-alcool", options=[{'label': "Consommation d'alcool", 'value': 'alc'},
+                        {'label': "Pas de consommation d'alcool", 'value': 'nalc'}, ],  value= "alc",
                         labelStyle={'display': 'flex', "gap":"5px"}),
                 ], style={"display": "flex", "align-items":"flex-start",
                             "justify-content":"space-around", "gap": "10px"}),
@@ -90,16 +90,6 @@ layout = html.Div([navbar2.layout,
                         value= 90,),
                 ], style={"display": "flex", "align-items":"baseline", "gap": "10px",
                             "justify-content":"space-around", }),
-            
-            ], style={'background-color': glob.fond_ecran_formulaire,  "display": "flex",
-            "justify-content":"space-around", "align-items":"center"}),
-            #"flex-direction": "raw", 
-            #"flex-wrap": "wrap", }
-
-            html.P(children= ""),
-
-            # 2 date 2 input. 3ème goupe de 4 entrées
-            html.Div([
                 html.Div([           
                     html.P(children= "PA systolique"),
                     dcc.Input(placeholder="[10;300]", type='text', id='i-pasys',
@@ -115,6 +105,33 @@ layout = html.Div([navbar2.layout,
                         value= 90),
                 ], style={"display": "flex", "align-items":"baseline",
                             "justify-content":"space-around", "gap": "10px"}),
+
+
+            ], style={'background-color': glob.fond_ecran_formulaire,  "display": "flex",
+            "justify-content":"space-around", "align-items":"center"}),
+            #"flex-direction": "raw", 
+            #"flex-wrap": "wrap", }
+
+            html.P(children= ""),
+
+            # 2 date 2 input. 3ème goupe de 4 entrées
+            html.Div([
+
+                html.Div([           
+                    html.P(children= "Nom:"),
+                    dcc.Input(placeholder="Nom", type='text', id='i-nom',
+                        style= {"text-align": "center", "width":"100px"},
+                        value= "toto",),
+                ], style={"display": "flex", "align-items":"baseline", "gap": "10px",
+                            "justify-content":"space-around",}),
+
+                html.Div([           
+                    html.P(children= "Prénom:"),
+                    dcc.Input(placeholder="Prénom", type='text', id='i-prenom',
+                        style= {"text-align": "center", "width":"100px"},
+                        value= "tutu",),
+                ], style={"display": "flex", "align-items":"baseline", "gap": "10px",
+                            "justify-content":"space-around",}),
 
                 html.Div([           
                     html.P(children= "Date de naissance :"),
@@ -137,10 +154,14 @@ layout = html.Div([navbar2.layout,
                         max_date_allowed= datetime.date.today(), #(2017, 9, 19)
                         #initial_visible_month= datetime.date.today(),
                         date= datetime.date.today(),
-                        display_format= "DD-MM-Y"
+                        display_format= "DD-MM-Y",
+                        style= {"display" : "flex", "height" :"20px",},
                     ),
-                ], style={"display": "flex", "align-items":"baseline",
+                ], style={"display": "flex", "align-items":"baseline", "height" :"25px",
                             "justify-content":"space-around", "gap": "10px"}),
+
+                html.Button(id='analyse-button', children= "Lancer l'analyse", n_clicks=0,),
+
 
             ], style={'background-color': glob.fond_ecran_formulaire,  "display": "flex",
             "justify-content":"space-around", "align-items":"baseline"}),
@@ -149,17 +170,7 @@ layout = html.Div([navbar2.layout,
 
             html.P(children= ""),
 
-            html.Div([           
-                html.Button(id='analyse-button', children= "Lancer l'analyse", n_clicks=0,
-                style={"text-align":"center"}),
-                ],style={"display": "flex", "align-items":"center", "align-content":"center",
-                            "justify-content":"space-around",#"width": "150px",
-                            'background-color': glob.fond_ecran_formulaire,
-                            "flex-direction": "column"}),
-
-            html.P(children= ""),
-
-            html.H4("Liste des algorithmes.", style={"text-align":"center"}),
+            #html.H4("Liste des algorithmes.", style={"text-align":"center"}),
 
             html.P(children= ""),
             #html.Div(id='output-container-date-picker-single'),
@@ -188,14 +199,16 @@ layout = html.Div([navbar2.layout,
     State("ri-alcool", "value"), State("dd-glucose", "value"), State("dd-cholesterol", "value"),
     State("i-taille", "value"), State("i-poids", "value"), State("i-pasys", "value"),
     State("i-padia", "value"), State("dt-consultation", "date"), State("dt-naissance", "date"),
+    State("i-nom", "value"), State("i-prenom", "value")
     )
 def update_output(n_clicks, rigenre, riactivite, ritabac, rialcool, ddglucose,
-    ddcholesterol, itaille, ipoids, ipasys, ipadia, dtconsultation, dtnaissance):
+    ddcholesterol, itaille, ipoids, ipasys, ipadia, dtconsultation, dtnaissance,
+    inom, iprenom):
     if n_clicks > 0:
         if rigenre== None:
             return "Erreur: Veuillez renseigner le genre."
         else:
-            rigenre = 0 if rigenre== 'h' else 1
+            rigenre = 1 if rigenre== 'h' else 2
 
         if riactivite== None:
             return "Erreur: Veuillez renseigner l'activité."
@@ -231,20 +244,38 @@ def update_output(n_clicks, rigenre, riactivite, ritabac, rialcool, ddglucose,
         if dtconsultation== None:
             return "Erreur: Veuillez renseigner la date de consultation."
 
+        if inom== None:
+            return "Erreur: Veuillez renseigner le nom du patient."
+
+        if iprenom== None:
+            return "Erreur: Veuillez renseigner le prénom du patient."
+
         else:
             d1= datetime.datetime.strptime(dtnaissance,'%Y-%m-%d')
             d2= datetime.datetime.strptime(dtconsultation,'%Y-%m-%d')
             donnees_patient= [(d2-d1).days, rigenre, itaille, ipoids, ipasys, ipadia,
                 ddcholesterol, ddglucose, ritabac, rialcool, riactivite]
+            identite_patient= [inom, iprenom, d1]
+
+            # Le patient est-il dans la base?
+            idp= glob.patient(identite_patient= identite_patient)
             
-            retour_analyse= glob.analyse(donnees_patient)
+            if idp== None:
+                glob.alerte(message= "Erreur dans prediction. idp== None")
+            else: # on intègre l'idp
+                identite_patient.append(idp)
+            
+            retour_analyse= glob.analyse(donnees_patient= donnees_patient)
 
             if retour_analyse== None:
-                glob.alerte("Erreur: Analyse impossible")
+                glob.alerte(message= "Erreur retour analyse. retour_analyse== None")
             else: #Enregistrement en base
-                glob.enregistrement(ra= retour_analyse, dp= donnees_patient)
+                ret= glob.enregistrement(retour_analyse= retour_analyse, idpatient= idp)
+                if ret== None:
+                    glob.alerte(message= "Erreur retour enregistrement. ret== None")
 
-            return f"{retour_analyse} {n_clicks}, {rigenre}, {riactivite}, {ritabac}, {rialcool}, {ddglucose},"+\
+
+            return f"{glob.message_erreur} {n_clicks}, {rigenre}, {riactivite}, {ritabac}, {rialcool}, {ddglucose},"+\
                 f"{ddcholesterol}, {itaille}, {ipoids}, {ipasys}, {ipadia}, {dtconsultation},"+\
                 f"{dtnaissance} - {(d2-d1).days}"
     
