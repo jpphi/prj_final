@@ -67,6 +67,14 @@ login_manager.login_view = '/login'
 class Users(UserMixin, Users):
     pass
 
+#--------------------- Ouverture de la base medecin -------------------------------
+
+ret= glob.ouveture_base_medecin()
+
+if ret== None: glob.alerte("Erreur testlog :")
+
+#--------------------- Layout de l'application -------------------------------
+
 app.layout= html.Div([
             html.Div(id='page-content', className='content'),
             dcc.Location(id='url', refresh=False),

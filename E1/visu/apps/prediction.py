@@ -4,6 +4,7 @@ from dash import html
 from dash.dependencies import Input, Output, State
 
 import datetime
+import ast
 
 from apps import navbar2, glob
 from app import app
@@ -19,6 +20,17 @@ layout = html.Div([navbar2.layout,
 
             # Boutons radios. 1er goupe de 4 entrées
             html.Div([ 
+
+                html.Div([           
+                    html.P(children= "Médecin prescripteur:"),
+                    dcc.Dropdown(id='dd-medecin', 
+                        options= [str(row.idmed) + " - " + str(row.nom).lower() + " " + 
+                            str(row.prenom) for index, row in glob.df_medecin.iterrows()],
+                        style= {"width":"200px", "color": glob.fond_ecran_formulaire,},
+                        value= "" ),
+                ], style={"display": "flex", "align-items":"baseline",
+                            "justify-content":"space-around", "gap": "10px"}),              
+
                 html.Div([
                     #html.P(children= "Genre :"),
                     dcc.RadioItems(id="ri-genre", options=[{'label': ' Homme', 'value': 'h'},
@@ -177,7 +189,7 @@ layout = html.Div([navbar2.layout,
 
             # Zone d'analyse
             html.Div([
-                html.H2(children= "Veuillez remplir tout les champs du formulaire "+\
+                html.H2(children= "Veuillez remplir tous les champs du formulaire "+\
                     "avant de lancer une analyse.", style= {"text-align" : "center"}),
 
                 html.Div(id='container-button-basic', children= ""),
@@ -199,85 +211,155 @@ layout = html.Div([navbar2.layout,
     State("ri-alcool", "value"), State("dd-glucose", "value"), State("dd-cholesterol", "value"),
     State("i-taille", "value"), State("i-poids", "value"), State("i-pasys", "value"),
     State("i-padia", "value"), State("dt-consultation", "date"), State("dt-naissance", "date"),
-    State("i-nom", "value"), State("i-prenom", "value")
+    State("i-nom", "value"), State("i-prenom", "value"), State("dd-medecin","value")
     )
 def update_output(n_clicks, rigenre, riactivite, ritabac, rialcool, ddglucose,
     ddcholesterol, itaille, ipoids, ipasys, ipadia, dtconsultation, dtnaissance,
-    inom, iprenom):
+    inom, iprenom, ddmedecin):
+    cr= "### **Compte rendu d'analyse:**  \n"
     if n_clicks > 0:
         if rigenre== None:
             return "Erreur: Veuillez renseigner le genre."
         else:
+            cr+= "Homme, " if rigenre== 'h' else "Femme, "
             rigenre = 1 if rigenre== 'h' else 2
 
         if riactivite== None:
             return "Erreur: Veuillez renseigner l'activité."
         else:
+            cr+= "pratiquant une activité physique, " if riactivite== 'act' \
+                else "ne pratiquant pas d'activité physique, "
             riactivite = 1 if riactivite== 'act' else 0
 
         if ritabac== None:
             return "Erreur: Veuillez renseigner tabagisme."
         else:
+            cr+= "fumeur(se), " if ritabac== 'fum' else "non fumeur(se), "
             ritabac = 1 if ritabac== 'fum' else 0
 
         if rialcool== None:
             return "Erreur: Veuillez renseigner la consommation d'alcool."
         else:
+            cr+= "consommant de l'alcool, " if rialcool== 'alc' \
+                else "ne consommant pas d'alcool, "
             rialcool = 1 if rialcool== 'alc' else 0
 
         if ddglucose== None:
             return "Erreur: Veuillez renseigner le niveau de glucose."
+        else:
+            if ddglucose== 1 :
+                cr+= "avec un taux de glucose normal, "
+            elif ddglucose== 2 :
+                cr+= "avec un taux de glucose au dessus de la normal, "
+            elif ddglucose== 3 :
+                cr+= "avec un taux de glucose très au dessus de la normal, "
+            else:
+                cr+= "TAUX DE GLUCOSE INNATENDU"
+
         if ddcholesterol== None:
             return "Erreur: Veuillez renseigner le taux de cholesterol."
+        else:
+            if ddcholesterol== 1 :
+                cr+= "avec un taux de cholesterol normal, "
+            elif ddcholesterol== 2 :
+                cr+= "avec un taux de cholesterol au dessus de la normal, "
+            elif ddcholesterol== 3 :
+                cr+= "avec un taux de cholesterol très au dessus de la normal, "
+            else:
+                cr+= "TAUX DE CHOLESTEROL INNATENDU"
 
         if itaille== None or itaille== "":
             return "Erreur: Veuillez renseigner la taille."
+        else:
+            cr+= f"taille : {itaille} ,"
+
         if ipoids== None or ipoids== "":
             return "Erreur: Veuillez renseigner le poids."
+        else:
+            cr+= f"poids : {ipoids} ,"
+
         if ipasys== None or ipasys== "":
             return "Erreur: Veuillez renseigner PA systolique."
+        else:
+            cr+= f"pression systolique : {ipasys} ,"
+
         if ipadia== None or ipadia== "":
             return "Erreur: Veuillez renseigner PA diastolique."
+        else:
+            cr+= f"pression diastolique : {ipadia} ,"
 
         if dtnaissance== None:
             return "Erreur: Veuillez renseigner la date de naissance."
+        else:
+            cr+= f"né(e) le : {dtnaissance} ,"
+
         if dtconsultation== None:
             return "Erreur: Veuillez renseigner la date de consultation."
+        else:
+            cr+= f"date de la consultation : {dtconsultation}  \n"
+
 
         if inom== None:
             return "Erreur: Veuillez renseigner le nom du patient."
+        else:
+            cr+= f"Mme/M (Nom prénom) {inom} "
 
         if iprenom== None:
             return "Erreur: Veuillez renseigner le prénom du patient."
-
         else:
-            d1= datetime.datetime.strptime(dtnaissance,'%Y-%m-%d')
-            d2= datetime.datetime.strptime(dtconsultation,'%Y-%m-%d')
-            donnees_patient= [(d2-d1).days, rigenre, itaille, ipoids, ipasys, ipadia,
-                ddcholesterol, ddglucose, ritabac, rialcool, riactivite]
-            identite_patient= [inom, iprenom, d1]
+            cr+= f"{iprenom}, "
 
-            # Le patient est-il dans la base?
-            idp= glob.patient(identite_patient= identite_patient)
-            
-            if idp== None:
-                glob.alerte(message= "Erreur dans prediction. idp== None")
-            else: # on intègre l'idp
-                identite_patient.append(idp)
-            
-            retour_analyse= glob.analyse(donnees_patient= donnees_patient)
+        if ddmedecin== None:
+            return "Erreur: Veuillez renseigner le champ médecin prescripteur."
+        else:
+            cr+= f"adressé par (numéro d'enregistrement, nom, prénom): {ddmedecin}.  \n"
 
-            if retour_analyse== None:
-                glob.alerte(message= "Erreur retour analyse. retour_analyse== None")
-            else: #Enregistrement en base
-                ret= glob.enregistrement(retour_analyse= retour_analyse, idpatient= idp)
-                if ret== None:
-                    glob.alerte(message= "Erreur retour enregistrement. ret== None")
+        #else:
+        d1= datetime.datetime.strptime(dtnaissance,'%Y-%m-%d')
+        d2= datetime.datetime.strptime(dtconsultation,'%Y-%m-%d')
+        donnees_patient= [(d2-d1).days, rigenre, itaille, ipoids, ipasys, ipadia,
+            ddcholesterol, ddglucose, ritabac, rialcool, riactivite]
+        identite_patient= [inom, iprenom, d1]
 
+        #print(ddmedecin, " - ", type(ddmedecin))
 
-            return f"{glob.message_erreur} {n_clicks}, {rigenre}, {riactivite}, {ritabac}, {rialcool}, {ddglucose},"+\
-                f"{ddcholesterol}, {itaille}, {ipoids}, {ipasys}, {ipadia}, {dtconsultation},"+\
-                f"{dtnaissance} - {(d2-d1).days}"
+        # Le patient est-il dans la base?
+        idp= glob.patient(identite_patient= identite_patient)
+        if idp== None:
+            glob.alerte(message= "Erreur dans prediction. idp== None")
+
+        # On recupère l'id du medecin ?
+        idmed= eval(ddmedecin.split('-')[0])
+
+        retour_analyse= glob.analyse(donnees_patient= donnees_patient)
+
+        if retour_analyse== None:
+            glob.alerte(message= "Erreur retour analyse. retour_analyse== None")
+        else: #Enregistrement en base
+            #print("Retour analyse:", retour_analyse)
+            cr+= "#### Résultats des analyses:  \n"
+            cr+= "Le nom des algorithmes est suivie de la probabilitée d'avoir un risque, "+\
+                 "pour ce patient, de maladie cardio-vasculaire.\n"
+
+            # extraction du dictionnaire le la liste
+            d= retour_analyse[11]
+            d= d.replace("array(","")
+            d= d.replace(")","")
+            d= ast.literal_eval(d)
+            for c,v in d.items():
+                if c== "score": continue 
+                cr+= f"- {c} : {100*v[1]:.2f} %\n"
+
+            ret= glob.enregistrement(retour_analyse= retour_analyse, idpatient= idp, 
+                idmedecin= idmed)
+            if ret== None:
+                glob.alerte(message= "Erreur retour enregistrement. ret== None")
+
+        # cr= f"{glob.message_erreur} {n_clicks}, {rigenre}, {riactivite}, {ritabac}, {rialcool}, {ddglucose},"+\
+        #     f"{ddcholesterol}, {itaille}, {ipoids}, {ipasys}, {ipadia}, {dtconsultation},"+\
+        #     f"{dtnaissance} - {(d2-d1).days}, {idp}, {idmed}"
+
+        return dcc.Markdown(cr) 
     
 
 
