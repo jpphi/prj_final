@@ -33,7 +33,8 @@ from flask_sqlalchemy import SQLAlchemy
 #records= "cursor.fetchall()"
 
 
-if glob.df_examen== None or glob.df_medecin== None or glob.df_patient== None:
+if glob.df_examen== None or glob.df_medecin== None or glob.df_patient== None \
+    or glob.df_diagnostique== None:
     try:
         with sqlite3.connect(glob.bdd) as conn:
             glob.df_examen= pd.read_sql("SELECT * from examen",conn)
@@ -41,6 +42,8 @@ if glob.df_examen== None or glob.df_medecin== None or glob.df_patient== None:
             glob.df_medecin= pd.read_sql("SELECT * from medecin",conn)
         with sqlite3.connect(glob.bdd) as conn:
             glob.df_patient= pd.read_sql("SELECT * from patient",conn)
+        with sqlite3.connect(glob.bdd) as conn:
+            glob.df_diagnostique= pd.read_sql("SELECT * from diagnostique",conn)
         cpt_rendu= f"Ouverture des tables examen, medecin et patient depuis {glob.bdd}"
     except:
         cpt_rendu= f"La base {glob.bdd} n'a pu être chargé"

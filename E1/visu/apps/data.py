@@ -58,6 +58,22 @@ tab_patient= dash_table.DataTable(id='container-button-timestamp',
         'padding-left':'5px'
         }
 )
+tab_diag= dash_table.DataTable(id='container-button-timestamp',
+    data= glob.df_diagnostique.to_dict('records'),
+    columns=[{'id': c, 'name': c} for c in glob.df_diagnostique.columns],
+    export_format='csv',
+    page_size= 10,
+    style_header={'backgroundColor': 'rgb(30, 30, 30)', "color" : glob.couleur_ecrit},
+    style_table={'overflowX': 'auto',
+                    'width' : largeur,
+                    'height': '400px'},
+    style_cell={
+        'backgroundColor': 'rgb(50, 50, 50)',
+        'color': 'white',
+        'textAlign':'left',
+        'padding-left':'5px'
+        }
+)
 
 layout = html.Div([
     navbar2.layout,
@@ -69,6 +85,7 @@ layout = html.Div([
 du patient ainsi que l'identifiant du medecin.
 - La table médecin: Le nom des médecins prescripteurs.
 - La table patient: Le nom des patients ayant participant à l'étude.
+- La table diagnostique: Les différents diagnostiques réalisés
 """),
         html.P(""),
 
@@ -77,6 +94,7 @@ du patient ainsi que l'identifiant du medecin.
                 dbc.Tab(tab_examen, label="Examen",label_style={"color":"#e5e7e9"}),
                 dbc.Tab(tab_medecin, label="Medecins", label_style={"color":"#fefefe"}),
                 dbc.Tab(tab_patient, label="Patients", label_style={"color":"#dbdbdb"}),
+                dbc.Tab(tab_diag, label="Diagnostiques", label_style={"color":"#b9b9b9"}),
             ], style={"display": "flex", "align-items":"center", "align-content":"center"}),
         ], style={"display": "flex", "flex-direction": "column", "justify-content":"center",
             "align-items":"center", "align-content":"center"}),

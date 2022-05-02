@@ -9,6 +9,7 @@ import ast
 from apps import navbar2, glob
 from app import app
 
+message=""
 
 layout = html.Div([navbar2.layout,
 
@@ -271,32 +272,32 @@ def update_output(n_clicks, rigenre, riactivite, ritabac, rialcool, ddglucose,
         if itaille== None or itaille== "":
             return "Erreur: Veuillez renseigner la taille."
         else:
-            cr+= f"taille : {itaille} ,"
+            cr+= f"taille : {itaille} cm, "
 
         if ipoids== None or ipoids== "":
             return "Erreur: Veuillez renseigner le poids."
         else:
-            cr+= f"poids : {ipoids} ,"
+            cr+= f"poids : {ipoids} kg, "
 
         if ipasys== None or ipasys== "":
             return "Erreur: Veuillez renseigner PA systolique."
         else:
-            cr+= f"pression systolique : {ipasys} ,"
+            cr+= f"pression systolique : {ipasys}, "
 
         if ipadia== None or ipadia== "":
             return "Erreur: Veuillez renseigner PA diastolique."
         else:
-            cr+= f"pression diastolique : {ipadia} ,"
+            cr+= f"pression diastolique : {ipadia}, "
 
         if dtnaissance== None:
             return "Erreur: Veuillez renseigner la date de naissance."
         else:
-            cr+= f"né(e) le : {dtnaissance} ,"
+            cr+= f"né(e) le : {dtnaissance}, "
 
         if dtconsultation== None:
             return "Erreur: Veuillez renseigner la date de consultation."
         else:
-            cr+= f"date de la consultation : {dtconsultation}  \n"
+            cr+= f"date de la consultation : {dtconsultation}.  \n"
 
 
         if inom== None:
@@ -326,7 +327,8 @@ def update_output(n_clicks, rigenre, riactivite, ritabac, rialcool, ddglucose,
         # Le patient est-il dans la base?
         idp= glob.patient(identite_patient= identite_patient)
         if idp== None:
-            glob.alerte(message= "Erreur dans prediction. idp== None")
+            msg_alerte = glob.alerte(message= "Erreur dans prediction. idp== None")
+            return msg_alerte
 
         # On recupère l'id du medecin ?
         idmed= eval(ddmedecin.split('-')[0])
@@ -334,7 +336,8 @@ def update_output(n_clicks, rigenre, riactivite, ritabac, rialcool, ddglucose,
         retour_analyse= glob.analyse(donnees_patient= donnees_patient)
 
         if retour_analyse== None:
-            glob.alerte(message= "Erreur retour analyse. retour_analyse== None")
+            msg_alerte = glob.alerte(message= "Erreur dans prediction. retour_analyse== None")
+            return msg_alerte
         else: #Enregistrement en base
             #print("Retour analyse:", retour_analyse)
             cr+= "#### Résultats des analyses:  \n"
@@ -346,14 +349,19 @@ def update_output(n_clicks, rigenre, riactivite, ritabac, rialcool, ddglucose,
             d= d.replace("array(","")
             d= d.replace(")","")
             d= ast.literal_eval(d)
+            tab_score=[]
             for c,v in d.items():
                 if c== "score": continue 
+                tab_score.append(v[1])
                 cr+= f"- {c} : {100*v[1]:.2f} %\n"
-
+            moyenne= sum(tab_score)/len(tab_score)
+            cardio= 0 if moyenne < 0.5 else 1
             ret= glob.enregistrement(retour_analyse= retour_analyse, idpatient= idp, 
-                idmedecin= idmed)
+                idmedecin= idmed, cardio= cardio)
+            #ret= None # Test fonction alerte
             if ret== None:
-                glob.alerte(message= "Erreur retour enregistrement. ret== None")
+                msg_alerte = glob.alerte(message= "Erreur retour enregistrement. ret== None")
+                return msg_alerte
 
         # cr= f"{glob.message_erreur} {n_clicks}, {rigenre}, {riactivite}, {ritabac}, {rialcool}, {ddglucose},"+\
         #     f"{ddcholesterol}, {itaille}, {ipoids}, {ipasys}, {ipadia}, {dtconsultation},"+\
@@ -364,11 +372,8 @@ def update_output(n_clicks, rigenre, riactivite, ritabac, rialcool, ddglucose,
 
 
 
-######################
-
-
-
-
+###########################################
+"""
 @app.callback(
     Output('output-container-date-picker-single', 'children'),
     Input('my-date-picker-single', 'date'))
@@ -378,8 +383,8 @@ def update_output(date_value):
         date_object = datetime.date.fromisoformat(date_value)
         date_string = date_object.strftime('%B %d, %Y')
         return string_prefix + date_string
-
-
+"""
+"""
 @app.callback(
     Output('dd-output-container', 'children'),
     Input('demo-dropdown', 'value')
@@ -387,4 +392,4 @@ def update_output(date_value):
 def update_output(value):
     return f'You have selected {value}'
 
-
+"""
