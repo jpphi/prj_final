@@ -1,8 +1,20 @@
-from dash import dcc
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+"""
+Créé en mars 2022
+
+Projet de fin d'étude Simplon
+    Serveur support de l'application d'aide au diagnostique sur les maladies cardio-vasculaires
+    page success; ce fichier doit se situer dans le sous-répertoire /apps
+
+@author: jpphi
+"""
+
 import pandas as pd
 import sqlite3
 
-from dash import html
+from dash import dcc, html
 from dash.dependencies import Input, Output, State
 import dash_bootstrap_components as dbc
 
@@ -10,28 +22,14 @@ from app import app
 from apps import navbar2, glob
 
 
-import os
+#import os
 
 
-from sqlalchemy import Table, create_engine, sql, text
-from sqlalchemy.sql import select
-from flask_sqlalchemy import SQLAlchemy
+#from sqlalchemy import Table, create_engine, sql, text
+#from sqlalchemy.sql import select
+#from flask_sqlalchemy import SQLAlchemy
 
-
-
-#with sqlite3.connect(bdd) as conn:
-#    df= pd.read_sql("SELECT * from examen",conn)
-#engine = create_engine('sqlite:///toto.toto')
-#db = SQLAlchemy()
-
-#str_sql = sql.text("SELECT * FROM examen")
-
-#with engine.connect() as connection:
-#    records = pd.read_sql('SELECT * from utilisateur', connection)
-
-
-#records= "cursor.fetchall()"
-
+#--------------------- Ouverture des tables -------------------------------
 
 if glob.df_examen== None or glob.df_medecin== None or glob.df_patient== None \
     or glob.df_diagnostique== None:
@@ -46,7 +44,7 @@ if glob.df_examen== None or glob.df_medecin== None or glob.df_patient== None \
             glob.df_diagnostique= pd.read_sql("SELECT * from diagnostique",conn)
         cpt_rendu= f"Ouverture des tables examen, medecin et patient depuis {glob.bdd}"
     except:
-        cpt_rendu= f"La base {glob.bdd} n'a pu être chargé"
+        cpt_rendu= f"Une des table de la base {glob.bdd} n'a pu être chargé"
 
 layout = html.Div([
             dcc.Location(id='url_login_success', refresh=True),

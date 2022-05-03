@@ -9,8 +9,6 @@ import ast
 from apps import navbar2, glob
 from app import app
 
-message=""
-
 layout = html.Div([navbar2.layout,
 
             html.H2("Prédiction du risque cardio-vasculaire.", style={"text-align":"center"}),
@@ -299,7 +297,6 @@ def update_output(n_clicks, rigenre, riactivite, ritabac, rialcool, ddglucose,
         else:
             cr+= f"date de la consultation : {dtconsultation}.  \n"
 
-
         if inom== None:
             return "Erreur: Veuillez renseigner le nom du patient."
         else:
@@ -315,59 +312,64 @@ def update_output(n_clicks, rigenre, riactivite, ritabac, rialcool, ddglucose,
         else:
             cr+= f"adressé par (numéro d'enregistrement, nom, prénom): {ddmedecin}.  \n"
 
-        #else:
         d1= datetime.datetime.strptime(dtnaissance,'%Y-%m-%d')
         d2= datetime.datetime.strptime(dtconsultation,'%Y-%m-%d')
-        donnees_patient= [(d2-d1).days, rigenre, itaille, ipoids, ipasys, ipadia,
-            ddcholesterol, ddglucose, ritabac, rialcool, riactivite]
-        identite_patient= [inom, iprenom, d1]
 
-        #print(ddmedecin, " - ", type(ddmedecin))
+        if (d2-d1).days== 0: # Test de la fonction alerte
+            glob.message_erreur= "Test de la fonction d'alerte:"
+            msg_alerte= glob.alerte("Message dans prediction: âge du patient= 0")
+            return msg_alerte 
+        else:
+            donnees_patient= [(d2-d1).days, rigenre, itaille, ipoids, ipasys, ipadia,
+                ddcholesterol, ddglucose, ritabac, rialcool, riactivite]
+            identite_patient= [inom, iprenom, d1]
 
-        # Le patient est-il dans la base?
-        idp= glob.patient(identite_patient= identite_patient)
-        if idp== None:
-            msg_alerte = glob.alerte(message= "Erreur dans prediction. idp== None")
-            return msg_alerte
+            #print(ddmedecin, " - ", type(ddmedecin))
 
-        # On recupère l'id du medecin ?
-        idmed= eval(ddmedecin.split('-')[0])
-
-        retour_analyse= glob.analyse(donnees_patient= donnees_patient)
-
-        if retour_analyse== None:
-            msg_alerte = glob.alerte(message= "Erreur dans prediction. retour_analyse== None")
-            return msg_alerte
-        else: #Enregistrement en base
-            #print("Retour analyse:", retour_analyse)
-            cr+= "#### Résultats des analyses:  \n"
-            cr+= "Le nom des algorithmes est suivie de la probabilitée d'avoir un risque, "+\
-                 "pour ce patient, de maladie cardio-vasculaire.\n"
-
-            # extraction du dictionnaire le la liste
-            d= retour_analyse[11]
-            d= d.replace("array(","")
-            d= d.replace(")","")
-            d= ast.literal_eval(d)
-            tab_score=[]
-            for c,v in d.items():
-                if c== "score": continue 
-                tab_score.append(v[1])
-                cr+= f"- {c} : {100*v[1]:.2f} %\n"
-            moyenne= sum(tab_score)/len(tab_score)
-            cardio= 0 if moyenne < 0.5 else 1
-            ret= glob.enregistrement(retour_analyse= retour_analyse, idpatient= idp, 
-                idmedecin= idmed, cardio= cardio)
-            #ret= None # Test fonction alerte
-            if ret== None:
-                msg_alerte = glob.alerte(message= "Erreur retour enregistrement. ret== None")
+            # Le patient est-il dans la base?
+            idp= glob.patient(identite_patient= identite_patient)
+            if idp== None:
+                msg_alerte = glob.alerte(message= "Erreur dans prediction. idp== None")
                 return msg_alerte
 
-        # cr= f"{glob.message_erreur} {n_clicks}, {rigenre}, {riactivite}, {ritabac}, {rialcool}, {ddglucose},"+\
-        #     f"{ddcholesterol}, {itaille}, {ipoids}, {ipasys}, {ipadia}, {dtconsultation},"+\
-        #     f"{dtnaissance} - {(d2-d1).days}, {idp}, {idmed}"
+            # On recupère l'id du medecin ?
+            idmed= eval(ddmedecin.split('-')[0])
 
-        return dcc.Markdown(cr) 
+            retour_analyse= glob.analyse(donnees_patient= donnees_patient)
+
+            if retour_analyse== None:
+                msg_alerte = glob.alerte(message= "Erreur dans prediction. retour_analyse== None")
+                return msg_alerte
+            else: #Enregistrement en base
+                #print("Retour analyse:", retour_analyse)
+                cr+= "#### Résultats des analyses:  \n"
+                cr+= "Le nom des algorithmes est suivie de la probabilitée d'avoir un risque, "+\
+                    "pour ce patient, de maladie cardio-vasculaire.\n"
+
+                # extraction du dictionnaire le la liste
+                d= retour_analyse[11]
+                d= d.replace("array(","")
+                d= d.replace(")","")
+                d= ast.literal_eval(d)
+                tab_score=[]
+                for c,v in d.items():
+                    if c== "score": continue 
+                    tab_score.append(v[1])
+                    cr+= f"- {c} : {100*v[1]:.2f} %\n"
+                moyenne= sum(tab_score)/len(tab_score)
+                cardio= 0 if moyenne < 0.5 else 1
+                ret= glob.enregistrement(retour_analyse= retour_analyse, idpatient= idp, 
+                    idmedecin= idmed, cardio= cardio)
+                #ret= None # Test fonction alerte
+                if ret== None:
+                    msg_alerte = glob.alerte(message= "Erreur retour enregistrement. ret== None")
+                    return msg_alerte
+
+            # cr= f"{glob.message_erreur} {n_clicks}, {rigenre}, {riactivite}, {ritabac}, {rialcool}, {ddglucose},"+\
+            #     f"{ddcholesterol}, {itaille}, {ipoids}, {ipasys}, {ipadia}, {dtconsultation},"+\
+            #     f"{dtnaissance} - {(d2-d1).days}, {idp}, {idmed}"
+
+            return dcc.Markdown(cr) 
     
 
 

@@ -5,7 +5,8 @@
 Créé le 25 décembre 2021
 
 Projet de fin d'étude Simplon
-    Serveur
+    Serveur support de l'application d'aide au diagnostique sur les maladies cardio-vasculaires
+    fichier devant se situer à la racine du site.
 
 @author: jpphi
 """
@@ -14,7 +15,6 @@ import dash
 import dash_bootstrap_components as dbc
 
 # bootstrap theme
-# https://bootswatch.com/lux/
 external_stylesheets = [dbc.themes.DARKLY]
 
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
