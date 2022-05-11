@@ -1,11 +1,20 @@
-from dash import dcc
-from dash import html
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+"""
+Créé en mars 2022
+
+Projet de fin d'étude Simplon
+    Serveur support de l'application d'aide au diagnostique sur les maladies cardio-vasculaires
+    failed.py; page failed. Ce fichier doit se situer dans le sous-répertoire /apps
+
+@auteur: jpphi
+"""
+
+from dash import dcc, html
 import dash_bootstrap_components as dbc
 
-from apps import login, glob, form
-
-#from app import app
-
+from apps import login, glob
 
 layout = html.Div([ dcc.Location(id='url_login_df', refresh=True),
         html.Div([
@@ -18,8 +27,6 @@ layout = html.Div([ dcc.Location(id='url_login_df', refresh=True),
                 
                 html.H4("Même joueur, joue encore !", style= {"text-align": "center"}),
                 html.P(""),
-                
-                html.H3(children= "Login :", style= {"text-align": "center"}),
                 
                 html.Div([login.layout]),
  

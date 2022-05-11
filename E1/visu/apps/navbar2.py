@@ -1,12 +1,22 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+"""
+Créé en mars 2022
+
+Projet de fin d'étude Simplon
+    Serveur support de l'application d'aide au diagnostique sur les maladies cardio-vasculaires
+    navbar2.py; layout de la barre de navigation. 
+        Ce fichier doit se situer dans le sous-répertoire /apps
+
+@auteur: jpphi
+"""
+
 from dash.dependencies import Input, Output, State
-
 import dash_bootstrap_components as dbc
-
 from dash import html
+
 from app import app   
-
-import base64
-
 
 dropdown = dbc.DropdownMenu(
     children=[

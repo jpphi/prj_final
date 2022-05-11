@@ -1,3 +1,17 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+"""
+Créé en mars 2022
+
+Projet de fin d'étude Simplon
+    Serveur support de l'application d'aide au diagnostique sur les maladies cardio-vasculaires
+    glob.py; Fichier contenant les fonctions et variables globales. 
+        Ce fichier doit se situer dans le sous-répertoire /apps
+
+@auteur: jpphi
+"""
+
 import os
 from joblib import load
 import sqlite3
@@ -22,6 +36,7 @@ fond_ecran_formulaire= Bleu_de_minuit
 couleur_ecrit= "#e5e7e9"
 # base de données
 bdd= "/home/jpphi/Documents/brief/ProjetFinDEtude/E1/datas/base_E1.db"
+#bdp="/home/jpphi/Documents/brief/ProjetFinDEtude/E1/datas/base_E1.db"
 
 df_examen= None
 df_medecin= None
@@ -29,7 +44,6 @@ df_patient= None
 df_diagnostique= None
 
 repertoire= "/home/jpphi/Documents/brief/ProjetFinDEtude/E1/modeles/"
-bdp="/home/jpphi/Documents/brief/ProjetFinDEtude/E1/datas/base_E1.db"
 
 message_erreur= ""  #"TEST DE LA FONCTIONNALITE ALERTE"
 
@@ -53,15 +67,8 @@ def alerte(message= None):
         return aff_alerte
 
 def analyse(donnees_patient= None):
-
         global message_erreur
 
-        #donnees_table_patient=donnees_patient[11:]
-        #donnees_analyse=donnees_patient[0:11]
-        #print(donnees_analyse, " - ", donnees_table_patient)
-
-        #donnees_patient.append(idp)
-        #print(donnees_patient)
         # Analyse
         try:
                 dict_algo_fichier = charge_modeles(repertoire= repertoire)
@@ -112,7 +119,7 @@ def creation_patient(identite_patient= None):
         #print(identite_patient)
         try:
         # Connexion à la base de donnée
-                conn = sqlite3.connect(bdp)
+                conn = sqlite3.connect(bdd)
                 cur = conn.cursor()
 
                 sql = "INSERT INTO patient (nom, prenom, naissance) VALUES(?,?,?)"
@@ -139,18 +146,13 @@ def enregistrement(retour_analyse= None, idpatient= None, idmedecin= None, cardi
 
         try:
         # Connexion à la base de donnée
-                conn = sqlite3.connect(bdp)
+                conn = sqlite3.connect(bdd)
                 cur = conn.cursor()
                 
                 sql = "INSERT INTO diagnostique (age, gender, height, weight, ap_hi, ap_lo, "+\
                         "cholesterol, gluc, smoke, alco, active, resultat_diag, idp, idmed, cardio) "+\
                         "VALUES(?,?,?,?,?,?, ?,?,?,?,?,?, ?,?, ?)"
                 ligne= tuple(el for el in retour_analyse)
-
-                # element= (ligne[0], ligne[1], ligne[2], ligne[3], ligne[4], ligne[5], 
-                #         ligne[6], ligne[7], ligne[8], ligne[9], ligne[10], ligne[11],
-                #         idpatient, idmedecin)
-                #for el in element: print(el, type(el))
 
                 cur.execute(sql, (ligne[0], ligne[1], ligne[2], ligne[3], ligne[4], ligne[5], 
                         ligne[6], ligne[7], ligne[8], ligne[9], ligne[10], ligne[11],
@@ -164,23 +166,18 @@ def enregistrement(retour_analyse= None, idpatient= None, idmedecin= None, cardi
                 message_erreur= f"Erreur dans enregistrement lors de la connexion à SQLite: {error}"
                 return None
 
-
-
-
 def ouveture_base_medecin():
         global message_erreur
 
         try:
-                conn = sqlite3.connect(bdp)
+                conn = sqlite3.connect(bdd)
                 cur = conn.cursor()
 
                 query = conn.execute("SELECT * FROM medecin")
                 cols = [column[0] for column in query.description]
 
                 df_medecin= pd.DataFrame.from_records(data = query.fetchall(), columns = cols)
-                #return 1
-                #message_erreur="Fonction ouverture_base_medecin: Impossible de lire la table"
-                #return None
+                return 1
         except:
                 message_erreur="Fonction ouverture_base_medecin: Impossible de lire la table"
                 return None
@@ -208,15 +205,13 @@ def recherche_id(identite_patient= None):
         #print(identite_patient)
         try:
         # Connexion à la base de donnée
-                conn = sqlite3.connect(bdp)
+                conn = sqlite3.connect(bdd)
                 cur = conn.cursor()
  
                 cur.execute("SELECT idp FROM patient WHERE nom= ? AND prenom= ? AND naissance= ?", 
                         ((identite_patient[0]).upper(),identite_patient[1].lower(),
                         identite_patient[2]))
 
-                #print(cur.fetchone())
-                #print(curseur.fetchone())  #affiche "(500,)"
                 idp= cur.fetchall()
                 n= len(idp)
                 cur.close()
@@ -234,8 +229,6 @@ def recherche_id(identite_patient= None):
                 return None
         else:
                 return int( (idp[0])[0] )
-        return idp
-
 
 @app.callback(
     Output(component_id= 'container-email', component_property= 'children'),

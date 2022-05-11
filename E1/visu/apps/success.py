@@ -8,7 +8,7 @@ Projet de fin d'étude Simplon
     Serveur support de l'application d'aide au diagnostique sur les maladies cardio-vasculaires
     page success; ce fichier doit se situer dans le sous-répertoire /apps
 
-@author: jpphi
+@auteur: jpphi
 """
 
 import pandas as pd
@@ -20,14 +20,6 @@ import dash_bootstrap_components as dbc
 
 from app import app
 from apps import navbar2, glob
-
-
-#import os
-
-
-#from sqlalchemy import Table, create_engine, sql, text
-#from sqlalchemy.sql import select
-#from flask_sqlalchemy import SQLAlchemy
 
 #--------------------- Ouverture des tables -------------------------------
 
@@ -64,38 +56,6 @@ layout = html.Div([
 
             html.Div([
                 html.P(cpt_rendu,style={"text-align": "center"}),
-                #html.Div([           
-                #    html.Button(id='bouton-bdd', children= "Lancer l'analyse", n_clicks=0,
-                #        style={"text-align":"center"}),
-                #    html.Div(id="sortie-bouton-bdd", children= ""),
-                #] ),
             ])
         ],style={"display": "flex", 'background-color': glob.fond_ecran_formulaire,
             "flex-direction": "column"}) #end div
-
-"""
-@app.callback(
-    Output(component_id= 'sortie-bouton-bdd', component_property= 'children'),
-    Input('bouton-bdd', 'n_clicks'),
-    #State('ri-genre', 'value'), State("ri-activite", 'value'), State("ri-tabac", "value"),
-    )
-def chargement_donnee(n_clicks):
-    if n_clicks > 0:
-
-
-
-        if glob.dfbase== None:
-            try:
-                with sqlite3.connect(glob.bdd) as conn:
-                    glob.dfbase= pd.read_sql("SELECT * from examen",conn)
-
-                #conn = sqlite3.connect(glob.bdd)
-
-                #dfbase= pd.read_sql_query("SELECT * FROM examen", conn)
-                #print(glob.dfbase)
-
-                return f"Chargement de la base de données {glob.bdd} effectué."
-            except:
-                return f"Problème chargement des données. {glob.bdd}\n"+\
-                    f"{os.getcwd()}"
-"""

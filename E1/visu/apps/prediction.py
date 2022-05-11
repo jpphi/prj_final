@@ -1,6 +1,18 @@
-from dash import dcc
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+"""
+Créé en mars 2022
+
+Projet de fin d'étude Simplon
+    Serveur support de l'application d'aide au diagnostique sur les maladies cardio-vasculaires
+    page prediction; ce fichier doit se situer dans le sous-répertoire /apps
+
+@auteur: jpphi
+"""
+
+from dash import dcc, html
 import dash_bootstrap_components as dbc
-from dash import html
 from dash.dependencies import Input, Output, State
 
 import datetime
@@ -101,6 +113,7 @@ layout = html.Div([navbar2.layout,
                         value= 90,),
                 ], style={"display": "flex", "align-items":"baseline", "gap": "10px",
                             "justify-content":"space-around", }),
+
                 html.Div([           
                     html.P(children= "PA systolique"),
                     dcc.Input(placeholder="[10;300]", type='text', id='i-pasys',
@@ -117,11 +130,8 @@ layout = html.Div([navbar2.layout,
                 ], style={"display": "flex", "align-items":"baseline",
                             "justify-content":"space-around", "gap": "10px"}),
 
-
             ], style={'background-color': glob.fond_ecran_formulaire,  "display": "flex",
             "justify-content":"space-around", "align-items":"center"}),
-            #"flex-direction": "raw", 
-            #"flex-wrap": "wrap", }
 
             html.P(children= ""),
 
@@ -173,7 +183,6 @@ layout = html.Div([navbar2.layout,
 
                 html.Button(id='analyse-button', children= "Lancer l'analyse", n_clicks=0,),
 
-
             ], style={'background-color': glob.fond_ecran_formulaire,  "display": "flex",
             "justify-content":"space-around", "align-items":"baseline"}),
             #"flex-direction": "raw", 
@@ -181,9 +190,7 @@ layout = html.Div([navbar2.layout,
 
             html.P(children= ""),
 
-            #html.H4("Liste des algorithmes.", style={"text-align":"center"}),
-
-            html.P(children= ""),
+            #html.P(children= ""),
             #html.Div(id='output-container-date-picker-single'),
 
             # Zone d'analyse
@@ -198,10 +205,7 @@ layout = html.Div([navbar2.layout,
         ], style={'background-color': glob.fond_ecran_formulaire, "display": "flex",
             "flex-direction": "column", "justify-content":"space-between"}) #end div
 
-
-
-
-
+#--------------------- Callback -------------------------------
 
 @app.callback(
     Output(component_id= 'container-button-basic', component_property= 'children'),
@@ -370,28 +374,3 @@ def update_output(n_clicks, rigenre, riactivite, ritabac, rialcool, ddglucose,
             #     f"{dtnaissance} - {(d2-d1).days}, {idp}, {idmed}"
 
             return dcc.Markdown(cr) 
-    
-
-
-
-###########################################
-"""
-@app.callback(
-    Output('output-container-date-picker-single', 'children'),
-    Input('my-date-picker-single', 'date'))
-def update_output(date_value):
-    string_prefix = 'You have selected: '
-    if date_value is not None:
-        date_object = datetime.date.fromisoformat(date_value)
-        date_string = date_object.strftime('%B %d, %Y')
-        return string_prefix + date_string
-"""
-"""
-@app.callback(
-    Output('dd-output-container', 'children'),
-    Input('demo-dropdown', 'value')
-)
-def update_output(value):
-    return f'You have selected {value}'
-
-"""
